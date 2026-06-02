@@ -1,8 +1,11 @@
-# coalitions 0.6.27 (dev)
+# coalitions 0.6.27
 - `dHondt()` and `sls()` now return a `ties` attribute (`TRUE`/`FALSE`) indicating
   whether the seat distribution is non-unique due to tied quotients at the last seat.
   When `ties = TRUE`, the result was resolved randomly and re-running may yield a
   different but equally valid distribution (see issue #131).
+- Added `\value` tag to `pipe.Rd`
+- Replaced remaining `\dontrun{}` with `\donttest{}` in `get_surveys()` and `scrape_ltw()` examples
+- Removed commented-out code from `get_surveys()` example
 
 # coalitions 0.6.26
 - Added `\value` documentation to all functions missing return value descriptions

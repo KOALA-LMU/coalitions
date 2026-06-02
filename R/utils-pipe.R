@@ -8,4 +8,5 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @usage lhs \%>\% rhs
+#' @return The result of applying \code{rhs} to \code{lhs}.
 NULL

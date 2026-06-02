@@ -245,10 +245,9 @@ scrape_wahlrecht <- function(
 #'   \item{votes}{Number of respondents that chose the party.}
 #' }
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(coalitions)
-#' # scrape data for the German federal election
-#' # get_surveys()
+#' get_surveys()
 #' }
 #' @export
 get_surveys <- function(country = "DE") {
@@ -418,7 +417,7 @@ get_surveys_rp <- function() {
 #' @param ind_row_remove Negative vector of rows that will be skipped at the beginning.
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Niedersachsen
 #' scrape_ltw() %>% slice(1:5)
 #' # Hessen

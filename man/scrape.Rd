@@ -51,7 +51,7 @@ library(coalitions)
 library(dplyr)
 scrape_wahlrecht() \%>\% slice(1:5)
 }
-\dontrun{
+\donttest{
 # Niedersachsen
 scrape_ltw() \%>\% slice(1:5)
 # Hessen
