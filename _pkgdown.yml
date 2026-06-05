@@ -1,5 +1,5 @@
 destination: docs
-url: https://adibender.github.io/coalitions
+url: https://koala-lmu.github.io/coalitions
 
 template:
   params:
@@ -66,6 +66,6 @@ navbar:
     href: news/index.html
   right:
   - icon: fa-github fa-lg
-    href: https://github.com/adibender/coalitions
+    href: https://github.com/KOALA-LMU/coalitions
 development:
   mode: auto

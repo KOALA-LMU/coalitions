@@ -32,7 +32,7 @@ Suggests:
     covr,
 Encoding: UTF-8
 License: MIT + file LICENSE
-URL: https://adibender.github.io/coalitions/
-BugReports: https://github.com/adibender/coalitions/issues
+URL: https://koala-lmu.github.io/coalitions/
+BugReports: https://github.com/KOALA-LMU/coalitions/issues
 RoxygenNote: 7.3.2
 LazyData: true

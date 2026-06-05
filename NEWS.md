@@ -1,3 +1,7 @@
+# coalitions 0.6.28 (dev)
+- Repository moved to the KOALA-LMU organization: https://github.com/KOALA-LMU/coalitions ;
+  documentation now at https://koala-lmu.github.io/coalitions/ (old URLs redirect, except the pkgdown site)
+
 # coalitions 0.6.27
 - `dHondt()` and `sls()` now return a `ties` attribute (`TRUE`/`FALSE`) indicating
   whether the seat distribution is non-unique due to tied quotients at the last seat.
@@ -76,7 +80,7 @@ Added/fixed scrappers for German state elections
 
 # coalitions 0.6.0 (2018-03)
 
-- Added vignette on [*pooling*](https://adibender.github.io/coalitions/articles/pooling.html)
+- Added vignette on [*pooling*](https://koala-lmu.github.io/coalitions/articles/pooling.html)
 
 
 # coalitions 0.5.7 (2017-12)

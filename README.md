@@ -1,7 +1,7 @@
 # coalitions <img src="man/figures/logo.png" align="right" />
 
-[![R-CMD-check](https://github.com/adibender/coalitions/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/adibender/coalitions/actions/workflows/R-CMD-check.yaml)
-[![Coverage Status](https://codecov.io/gh/adibender/coalitions/branch/master/graph/badge.svg)](https://app.codecov.io/github/adibender/coalitions?branch=master)
+[![R-CMD-check](https://github.com/KOALA-LMU/coalitions/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/KOALA-LMU/coalitions/actions/workflows/R-CMD-check.yaml)
+[![Coverage Status](https://codecov.io/gh/KOALA-LMU/coalitions/branch/master/graph/badge.svg)](https://app.codecov.io/github/KOALA-LMU/coalitions?branch=master)
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version-ago/coalitions)](https://cran.r-project.org/package=coalitions)
 [![](https://cranlogs.r-pkg.org/badges/coalitions)](https://cran.r-project.org/package=coalitions)
 [![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
@@ -14,7 +14,7 @@ To support estimation the package also implements scrappers that
 obtain data for German federal and state elections.
 The implementation can be extended to support other elections.
 
-  - To get started, see our [workflow vignette](https://adibender.github.io/coalitions/articles/workflow.html)
+  - To get started, see our [workflow vignette](https://koala-lmu.github.io/coalitions/articles/workflow.html)
 
   - Check out our [KOALA_LMU account on X](https://x.com/KOALA_LMU) for updates!
 ## Installation
@@ -24,13 +24,13 @@ The implementation can be extended to support other elections.
 install.packages("coalitions")
 
 # To install the most current version from GitHub use:
-devtools::install_github("adibender/coalitions")
+devtools::install_github("KOALA-LMU/coalitions")
 ```
 
 ## Usage
 
 Detailed workflow is outlined in the
-[workflow](https://adibender.github.io/coalitions/articles/workflow.html)
+[workflow](https://koala-lmu.github.io/coalitions/articles/workflow.html)
 vignette.
 
 A short overview is presented below.
