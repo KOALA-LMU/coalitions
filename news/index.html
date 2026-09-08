@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coalitions</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.27</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.28</span>
       </span>
     </div>
 
@@ -75,8 +75,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.28" id="coalitions-0628-dev">coalitions 0.6.28 (dev)<a class="anchor" aria-label="anchor" href="#coalitions-0628-dev"></a></h2>
-<ul><li>Repository moved to the KOALA-LMU organization: <a href="https://github.com/KOALA-LMU/coalitions" class="external-link uri">https://github.com/KOALA-LMU/coalitions</a> ; documentation now at <a href="https://koala-lmu.github.io/coalitions/" class="uri">https://koala-lmu.github.io/coalitions/</a> (old URLs redirect, except the pkgdown site)</li>
+<h2 class="page-header" data-toc-text="0.6.28" id="coalitions-0628">coalitions 0.6.28<a class="anchor" aria-label="anchor" href="#coalitions-0628"></a></h2>
+<ul><li><p><code><a href="../reference/scrape.html">scrape_wahlrecht()</a></code> now locates the poll rows by content (the first row whose date column holds a date) instead of skipping a fixed, per-URL number of rows. wahlrecht places <code>&lt;tfoot&gt;</code> before <code>&lt;tbody&gt;</code>, so the footer rows land above the data and the offset changes whenever that markup does: the Politbarometer header cell became a <code>&lt;th&gt;</code>, <code>html_table()</code> promoted the header, every body row shifted up by one, and the scraper read the party legend as column names and aborted on the duplicates — which also took down <code><a href="../reference/get_surveys.html">get_surveys()</a></code> (<a href="https://github.com/KOALA-LMU/coalitions/issues/146" class="external-link">#146</a>).</p></li>
+<li><p><code><a href="../reference/scrape.html">scrape_wahlrecht()</a></code> also locates the header row by content, so it no longer depends on whether <code>html_table()</code> promoted it. The Politbarometer page used to carry a stray <code>&lt;td&gt;</code> that kept the header inside <code>&lt;tbody&gt;</code> (special-cased by URL) and uses <code>&lt;th&gt;</code> today; both layouts now parse without a per-page branch.</p></li>
+<li><p><code><a href="../reference/scrape.html">scrape_wahlrecht()</a></code> now fails with a clear message when a page yields no poll rows or no recognisable party columns, instead of continuing on unusable input and silently discarding every poll via the <code>total == 100</code> filter.</p></li>
+<li><p><code><a href="../reference/scrape.html">scrape_wahlrecht()</a></code> no longer warns <code>Unknown or uninitialised column: 'Sonstige'</code> on pages that do not report a combined “Sonstige” figure.</p></li>
+<li><p>Repository moved to the KOALA-LMU organization: <a href="https://github.com/KOALA-LMU/coalitions" class="external-link uri">https://github.com/KOALA-LMU/coalitions</a> ; documentation now at <a href="https://koala-lmu.github.io/coalitions/" class="uri">https://koala-lmu.github.io/coalitions/</a> (old URLs redirect, except the pkgdown site)</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.27" id="coalitions-0627">coalitions 0.6.27<small>2026-05-08</small><a class="anchor" aria-label="anchor" href="#coalitions-0627"></a></h2>
@@ -190,7 +194,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer></div>
