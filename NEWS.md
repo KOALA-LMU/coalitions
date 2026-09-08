@@ -1,4 +1,22 @@
-# coalitions 0.6.28 (dev)
+# coalitions 0.6.28
+- `scrape_wahlrecht()` now locates the poll rows by content (the first row whose
+  date column holds a date) instead of skipping a fixed, per-URL number of rows.
+  wahlrecht places `<tfoot>` before `<tbody>`, so the footer rows land above the
+  data and the offset changes whenever that markup does: the Politbarometer
+  header cell became a `<th>`, `html_table()` promoted the header, every body row
+  shifted up by one, and the scraper read the party legend as column names and
+  aborted on the duplicates — which also took down `get_surveys()` (#146).
+- `scrape_wahlrecht()` also locates the header row by content, so it no longer
+  depends on whether `html_table()` promoted it. The Politbarometer page used to
+  carry a stray `<td>` that kept the header inside `<tbody>` (special-cased by
+  URL) and uses `<th>` today; both layouts now parse without a per-page branch.
+- `scrape_wahlrecht()` now fails with a clear message when a page yields no poll
+  rows or no recognisable party columns, instead of continuing on unusable input
+  and silently discarding every poll via the `total == 100` filter.
+- `scrape_wahlrecht()` no longer warns `Unknown or uninitialised column:
+  'Sonstige'` on pages that do not report a combined "Sonstige" figure.
+
+
 - Repository moved to the KOALA-LMU organization: https://github.com/KOALA-LMU/coalitions ;
   documentation now at https://koala-lmu.github.io/coalitions/ (old URLs redirect, except the pkgdown site)
 
