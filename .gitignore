@@ -20,3 +20,6 @@ inst/doc
 /vignettes/workflow.html
 ## linux artifacts
 *.nfs*
+
+# Written by devtools on submission; already in .Rbuildignore
+CRAN-SUBMISSION
