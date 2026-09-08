@@ -129,6 +129,14 @@ test_that("scrape_wahlrecht() finds the poll rows regardless of header markup", 
   expect_equal(newest$respondents, 1319)
   expect_equal(newest$start, as.Date("2026-08-17"))
   expect_equal(newest$end, as.Date("2026-08-19"))
+
+  # FW is not one of the modelled parties, so its share is folded into others
+  # rather than dropped: the fixture reports Sonstige 6 % + FW 3 %, and every
+  # row must still add up to 100.
+  expect_false("fw" %in% colnames(got))
+  expect_equal(newest$others, 9)
+  expect_true(all(rowSums(got[c("cdu", "spd", "greens", "fdp", "left", "afd",
+                                "others")]) == 100))
 })
 
 test_that("scrape_wahlrecht() fails loudly when no poll rows can be found", {
