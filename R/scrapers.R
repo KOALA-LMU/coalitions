@@ -132,21 +132,45 @@ scrape_wahlrecht <- function(
     html_nodes("table") %>% .[[2]] %>%
     html_table(fill = TRUE)
 
-  if (address == "https://www.wahlrecht.de/umfragen/politbarometer.htm") {
-    colnames(atab) <- atab[2, ]
-    ind_row_remove <- -1:-3
-  } else if ( address == "https://www.wahlrecht.de/umfragen/gms.htm" |
-    address == "https://www.wahlrecht.de/umfragen/insa.htm" ) {
-    ind_row_remove <- -1:-4
-  } else {
-    ind_row_remove <- -1:-3
+  # Whether html_table() promotes the header depends on markup this package does
+  # not control: the Politbarometer header used to carry a stray <td>, which kept
+  # it in the body (the old code special-cased that URL and read the names out of
+  # body row 2), and is a <th> today. Rather than track which page is in which
+  # state, detect it: the header is the row carrying both "Befragte" and
+  # "Zeitraum", wherever it currently sits.
+  is_header <- function(x) {
+    v <- tolower(trimws(unlist(x, use.names = FALSE)))
+    all(c("befragte", "zeitraum") %in% v)
+  }
+  if (!is_header(colnames(atab))) {
+    hdr <- which(vapply(seq_len(nrow(atab)),
+                        function(i) is_header(atab[i, ]), logical(1)))[1]
+    if (!is.na(hdr)) {
+      colnames(atab) <- unlist(atab[hdr, ], use.names = FALSE)
+      atab           <- atab[-seq_len(hdr), , drop = FALSE]
+    }
   }
 
-  atab           <- atab[ind_row_remove, ]
-  atab           <- atab[-nrow(atab), ]
+  # wahlrecht puts <tfoot> before <tbody>, so html_table() places the footer rows
+  # (a repeated header, the party legend) above the actual polls. How many such
+  # rows there are differs per page and changes over time, so cutting at a fixed
+  # per-URL offset is brittle: it broke when the Politbarometer header cell became
+  # a <th>, which made html_table() promote the header and shift every body row up
+  # by one (#146). Cut by content instead - keep from the first row whose date
+  # column holds a date - which needs no per-page special casing.
+  date_col   <- trimws(as.character(atab[[1]]))
+  first_poll <- which(grepl("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$", date_col))[1]
+  if (is.na(first_poll)) {
+    stop(sprintf("No poll rows found at %s: the table layout changed.", address))
+  }
+
+  # The final row is the last actual election result, not a poll.
+  atab           <- atab[seq(first_poll, nrow(atab) - 1L), ]
   colnames(atab) <- c("Datum", colnames(atab)[-1])
 
-  if (any(nchar(atab$Sonstige) > 6)) {
+  # Guarded: the column is only present on pages that report a combined
+  # "Sonstige" figure, and reaching into a missing one warns on every scrape.
+  if ("Sonstige" %in% colnames(atab) && any(nchar(atab$Sonstige) > 6)) {
     # correct the 'Sonstige' column if it contains information on
     # one party + other parties (see issue #138)
     weird_rows <- which(nchar(atab$Sonstige) > 6)
@@ -173,6 +197,12 @@ scrape_wahlrecht <- function(
 
   atab    <- sanitize_colnames(atab)
   parties <- colnames(atab)[colnames(atab) %in% tolower(parties)]
+  # Without this the run continues on garbage column names and every poll is
+  # silently discarded further down by the `total == 100` filter, which looks
+  # like "no new polls" rather than a broken page.
+  if (length(parties) == 0) {
+    stop(sprintf("No party columns found at %s: the table layout changed.", address))
+  }
   # transform percentage string to numerics
   atab <- atab %>%
     mutate(across(all_of(parties), extract_num)) %>%

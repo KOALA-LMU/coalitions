@@ -104,3 +104,56 @@ test_that("Survey sample tables correct", {
   expect_false(any(is.na(emnid$percent)))
 
 })
+
+test_that("scrape_wahlrecht() finds the poll rows regardless of header markup", {
+  # Regression test for #146. wahlrecht puts <tfoot> before <tbody>, so the
+  # footer rows (party legend, footnote) land above the data, and the number of
+  # rows to skip changes whenever that markup changes -- the Politbarometer
+  # header cell became a <th>, html_table() promoted the header, every body row
+  # shifted up by one and the old fixed per-URL offset read the legend as column
+  # names. The fixture reproduces that markup; parsing must not depend on it.
+  fixture <- testthat::test_path("fixtures", "politbarometer.html")
+
+  got <- scrape_wahlrecht(fixture)
+
+  # both polls, and neither the legend/footnote rows above nor the
+  # Bundestagswahl result row below
+  expect_equal(nrow(got), 2)
+  expect_equal(sort(got$date), as.Date(c("2026-08-06", "2026-08-20")))
+  expect_true(all(c("date", "start", "end", "cdu", "spd", "greens", "fdp",
+                    "left", "afd", "others", "respondents") %in% colnames(got)))
+
+  newest <- got[got$date == as.Date("2026-08-20"), ]
+  expect_equal(newest$cdu, 22)
+  expect_equal(newest$spd, 12)
+  expect_equal(newest$respondents, 1319)
+  expect_equal(newest$start, as.Date("2026-08-17"))
+  expect_equal(newest$end, as.Date("2026-08-19"))
+})
+
+test_that("scrape_wahlrecht() fails loudly when no poll rows can be found", {
+  # Better than continuing on garbage column names and silently discarding every
+  # poll further down via the `total == 100` filter, which reads as "no new polls".
+  empty <- withr::local_tempfile(fileext = ".html")
+  writeLines("<html><body><table><tr><td>x</td></tr></table><table><thead><tr><th>a</th></tr></thead><tbody><tr><td>not a date</td></tr></tbody></table></body></html>", empty)
+
+  expect_error(scrape_wahlrecht(empty), "layout changed")
+})
+
+test_that("scrape_wahlrecht() recovers the header when html_table() does not promote it", {
+  # The counterpart to the fixture above: the pre-2026 Politbarometer markup, where
+  # a stray <td> in the header row kept it inside <tbody> so html_table() left the
+  # columns as X1..Xn. The old code special-cased that URL and read the names out
+  # of body row 2; the header is now located by content, so both layouts parse and
+  # neither needs a per-page branch.
+  got <- scrape_wahlrecht(testthat::test_path("fixtures", "politbarometer-legacy-header.html"))
+
+  expect_equal(nrow(got), 2)
+  expect_equal(sort(got$date), as.Date(c("2026-08-06", "2026-08-20")))
+  expect_true(all(c("cdu", "spd", "greens", "fdp", "left", "afd", "others") %in% colnames(got)))
+
+  newest <- got[got$date == as.Date("2026-08-20"), ]
+  expect_equal(newest$cdu, 22)
+  expect_equal(newest$greens, 14)
+  expect_equal(newest$respondents, 1319)
+})
