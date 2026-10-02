@@ -20,21 +20,25 @@ expect_data_frame(head(scrape_wahlrecht(hp.vec[4])), min.cols = 11, nrows = 6)
 expect_data_frame(head(scrape_wahlrecht(hp.vec[5])), min.cols = 11, nrows = 6)
 expect_data_frame(head(scrape_wahlrecht(hp.vec[6])), min.cols = 11, nrows = 6)
 
-survey <- scrape_wahlrecht(
-  address = "https://www.wahlrecht.de/umfragen/insa.htm" ) %>%
-  filter(date == as.Date("2024-01-22"))
+# Value-level assertions run against a fixture, not the live page. wahlrecht
+# keeps only a rolling window per institute -- INSA polls weekly, so the row this
+# used to pin (22.01.2024) scrolled off and took three assertions with it, for a
+# reason that says nothing about the parser. There is no yearly archive page to
+# fall back on either. The live calls above still cover the page layout; the
+# fixture covers the values.
+survey <- scrape_wahlrecht(testthat::test_path("fixtures", "insa.html")) %>%
+  filter(date == as.Date("2026-09-22"))
 expect_data_frame(survey, nrows = 1, min.cols = 11)
 expect_true(all(c("date", "start", "end", "cdu", "spd",
   "greens", "fdp", "left", "afd", "others", "respondents") %in% colnames(survey)))
 expect_equal(survey$spd, 13.5)
-expect_equal(survey$respondents, 2006)
+expect_equal(survey$respondents, 2004)
 
-survey2 <- scrape_wahlrecht(
-    address = "https://www.wahlrecht.de/umfragen/allensbach.htm") %>%
-  filter(date == as.Date("2021-05-19"))
+survey2 <- scrape_wahlrecht(testthat::test_path("fixtures", "allensbach.html")) %>%
+  filter(date == as.Date("2026-09-24"))
 expect_data_frame(survey2, nrows = 1, min.cols = 11)
-expect_equal(survey2$cdu, 27.5)
-expect_equal(survey2$respondents, 1027)
+expect_equal(survey2$cdu, 23)
+expect_equal(survey2$respondents, 1051)
 
 })
 
@@ -43,38 +47,38 @@ test_that("Federal german scrapers work", {
   skip_if_offline()
 
   # Bayern
-  by <- scrape_by() %>% filter(date == as.Date("2018-02-12"))
+  by <- scrape_by(testthat::test_path("fixtures", "bayern.html")) %>%
+    filter(date == as.Date("2026-01-14"))
   expect_data_frame(by, nrows = 1, min.cols = 12)
-  expect_equal(by$csu, 40)
-  expect_equal(by$respondents, 1510)
+  expect_equal(by$csu, 39)
+  expect_equal(by$respondents, 1177)
 
   surveys_by <- get_surveys_by()
   expect_data_frame(surveys_by, nrows = 7, ncols = 2)
 
   # Niedersachsen
-  nds <- scrape_ltw() %>% filter(date == as.Date("2017-10-12"))
+  nds <- scrape_ltw(testthat::test_path("fixtures", "niedersachsen.html")) %>%
+    filter(date == as.Date("2026-09-11"))
   expect_data_frame(nds, nrows = 1, min.cols = 11)
-  expect_equal(nds$spd, 34.5)
-  expect_equal(nds$respondents, 1001)
+  expect_equal(nds$spd, 26)
+  expect_equal(nds$respondents, 1000)
 
   surveys_nds <- get_surveys_nds()
   expect_data_frame(surveys_nds, nrows = 7, ncols = 2)
 
   # Hessen
   he <- scrape_ltw(
-    address = "https://www.wahlrecht.de/umfragen/landtage/hessen.htm",
-    ind_row_remove = -1) %>%
-    filter(date <= as.Date("2018-09-07"))
-  expect_data_frame(he, min.rows = 10, min.cols = 11)
+    address = testthat::test_path("fixtures", "hessen.html"),
+    ind_row_remove = -1)
+  expect_data_frame(he, min.rows = 1, min.cols = 11)
   expect_true("respondents" %in% colnames(he))
   expect_true("others" %in% colnames(he))
 
   # Rheinland-Pfalz
-  rp <- scrape_rp() %>%
-    filter(date <= as.Date("2020-12-31") & date >= as.Date("2020-01-01"))
+  rp <- scrape_rp(testthat::test_path("fixtures", "rheinland-pfalz.html"))
   expect_data_frame(rp, min.rows = 1, min.cols = 12)
-  expect_identical(rp$respondents[1], 1002)
-  expect_identical(rp$others[rp$date == as.Date("2020-04-15")], 5)
+  expect_identical(rp$respondents[rp$date == as.Date("2026-03-18")], 1000)
+  expect_identical(rp$cdu[rp$date == as.Date("2026-03-18")], 28)
 
   surveys_rp <- get_surveys_rp()
   expect_data_frame(surveys_rp, nrows = 5, ncols = 2)
