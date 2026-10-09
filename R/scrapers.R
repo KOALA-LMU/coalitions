@@ -130,7 +130,7 @@ scrape_wahlrecht <- function(
 
   atab <- try_readHTML(address) %>%
     html_nodes("table") %>% .[[2]] %>%
-    html_table(fill = TRUE)
+    html_table()
 
   # Whether html_table() promotes the header depends on markup this package does
   # not control: the Politbarometer header used to carry a stray <td>, which kept
@@ -306,7 +306,7 @@ scrape_by <- function(
 
   atab <- try_readHTML(address) %>%
     html_nodes("table") %>% .[[2]] %>%
-    html_table(fill = TRUE)
+    html_table()
 
   ind_row_remove <- -c(1)
 
@@ -382,7 +382,7 @@ scrape_rp <- function(
 
   atab <- try_readHTML(address) %>%
     html_nodes("table") %>% .[[2]] %>%
-    html_table(fill = TRUE)
+    html_table()
 
   atab <- atab[ind_row_remove, ]
   atab <- atab[-nrow(atab), ]
@@ -462,7 +462,7 @@ scrape_ltw <- function(
 
   atab <- try_readHTML(address) %>%
     html_nodes("table") %>% .[[2]] %>%
-    html_table(fill = TRUE)
+    html_table()
 
   atab <- atab[ind_row_remove, ]
   atab <- atab[-nrow(atab), ]
