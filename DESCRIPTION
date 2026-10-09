@@ -16,7 +16,7 @@ Depends:
 Imports:
     checkmate,
     gtools,
-    rvest,
+    rvest (>= 1.0.0),
     xml2,
     rlang,
     magrittr,
